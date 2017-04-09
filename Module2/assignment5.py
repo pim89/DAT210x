@@ -1,15 +1,18 @@
 import pandas as pd
 import numpy as np
-
+import os
+curdir = os.path.dirname(__file__)
 
 #
 # TODO:
 # Load up the dataset, setting correct header labels.
 #
 # .. your code here ..
-
-
-
+filename = os.path.join(curdir,'Datasets','census.data')
+print 'open file', filename
+df = pd.read_csv(filename, names = ['education','age','capital-gain','race','capital-loss','hours-per-week','sex','classification'])
+df['capital-gain'] = pd.to_numeric(df['capital-gain'], errors = 'coerce')
+print df.head(5)
 #
 # TODO:
 # Use basic pandas commands to look through the dataset... get a
@@ -24,8 +27,7 @@ import numpy as np
 # na_values when loading the dataframe.
 #
 # .. your code here ..
-
-
+print df.info()
 
 #
 # TODO:
@@ -39,7 +41,21 @@ import numpy as np
 # continuous numeric type... or a series of categories?
 #
 # .. your code here ..
+# ordinal features:
+a = df.education.unique()
+edorder = [a[11], a[10], a[8], a[6], a[4], a[9], a[2], a[12], a[1], a[5], a[0], a[3], a[7]]
+a = df.classification.unique()
+classorder = [a[0],a[1]]
+df.education = df.education.astype("category", ordered=True, categories=edorder).cat.codes
+df.classification = df.classification.astype("category", ordered=True, categories=classorder).cat.codes
 
+# nominal features
+df = pd.get_dummies(df,columns=['race'])
+df = pd.get_dummies(df,columns=['sex'])
+                                  
+print df.head(10)
+print df.info()
+print df.columns
 
 
 #
@@ -47,5 +63,5 @@ import numpy as np
 # Print out your dataframe
 #
 # .. your code here ..
-
+print df
 
