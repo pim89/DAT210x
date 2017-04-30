@@ -3,19 +3,20 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 from pandas.tools.plotting import parallel_coordinates
+import os 
+
+curdir = os.path.dirname(__file__)
+filename = os.path.join(curdir,'Datasets','wheat.data')
 
 # Look pretty...
 # matplotlib.style.use('ggplot')
 plt.style.use('ggplot')
-
-
 #
 # TODO: Load up the Seeds Dataset into a Dataframe
 # It's located at 'Datasets/wheat.data'
 # 
 # .. your code here ..
-
-
+df = pd.read_csv(filename,index_col=0)
 
 #
 # TODO: Drop the 'id' feature, if you included it as a feature
@@ -32,7 +33,7 @@ plt.style.use('ggplot')
 # display parameter alpha to 0.4
 # 
 # .. your code here ..
-
+parallel_coordinates(df,'wheat_type', alpha = 0.5)
 
 
 plt.show()
