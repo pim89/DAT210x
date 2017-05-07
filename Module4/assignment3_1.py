@@ -25,11 +25,11 @@ scaleFeatures = True
 # feature?
 #
 # .. your code here ..
-df = pd.read_csv(filename, index_col=0)
+df = pd.read_csv(filename,index_col = 0)
 df = df.dropna(axis=0)
 df = df.reset_index(drop=True)
 
-
+exit()
 # Create some color coded labels; the actual label feature
 # will be removed prior to executing PCA, since it's unsupervised.
 # You're only labeling by color so you can see the effects of PCA
@@ -40,7 +40,9 @@ labels = ['red' if i=='ckd' else 'green' for i in df.classification]
 #       ['bgr','wc','rc']
 #
 # .. your code here ..
-s1 = df[['bgr','wc','rc']]
+droplabels = ['classification', 'rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane']
+droplabels = ['classification']
+df = df.drop(droplabels,axis=1)
 
 
 # TODO: Print out and check your dataframe's dtypes. You'll might
@@ -55,8 +57,10 @@ s1 = df[['bgr','wc','rc']]
 # an appropriate command to coerce these features into the right type.
 #
 # .. your code here ..
-s1.wc = pd.to_numeric(s1.wc, errors='coerce')
-s1.rc = pd.to_numeric(s1.rc, errors='coerce')
+df.wc = pd.to_numeric(df.wc, errors='coerce')
+df.rc = pd.to_numeric(df.rc, errors='coerce')
+df.pcv = pd.to_numeric(df.pcv, errors='coerce')
+df = pd.get_dummies(df)
 
 # TODO: PCA Operates based on variance. The variable with the greatest
 # variance will dominate. Go ahead and peek into your data using a
@@ -68,8 +72,9 @@ s1.rc = pd.to_numeric(s1.rc, errors='coerce')
 # you probably didn't complete the previous step properly.
 #
 # .. your code here ..
-print s1.describe()
-print s1.var()
+print df.describe()
+print df.var()
+print df.dtypes
 
 
 # TODO: This method assumes your dataframe is called df. If it isn't,
@@ -77,7 +82,6 @@ print s1.var()
 # just yet though!
 #
 # .. your code adjustment here ..
-df=s1
 if scaleFeatures: df = helper.scaleFeatures(df)
 
 

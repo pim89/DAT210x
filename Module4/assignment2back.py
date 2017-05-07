@@ -14,7 +14,7 @@ plt.style.use('ggplot')
 
 
 # Do * NOT * alter this line, until instructed!
-scaleFeatures = True
+scaleFeatures = False
 
 
 # TODO: Load up the dataset and remove any and all
@@ -77,7 +77,6 @@ print s1.var()
 # just yet though!
 #
 # .. your code adjustment here ..
-df=s1
 if scaleFeatures: df = helper.scaleFeatures(df)
 
 
@@ -88,8 +87,8 @@ if scaleFeatures: df = helper.scaleFeatures(df)
 #
 # .. your code here ..
 pca = PCA(copy=True, n_components=2, whiten=False)
-pca.fit(df)
-T = pca.transform(df)
+pca.fit(s1)
+T = pca.transform(s1)
 
 # Plot the transformed data as a scatter plot. Recall that transforming
 # the data will result in a NumPy NDArray. You can either use MatPlotLib
