@@ -23,23 +23,25 @@ def showandtell(title=None):
 # Convert the date using pd.to_datetime, and the time using pd.to_timedelta
 #
 # .. your code here ..
-
-
+df = pd.read_csv('Datasets/CDR.csv')
+df.CallDate = pd.to_datetime(df.CallDate)
+df.Duration = pd.to_timedelta(df.Duration)
+print df.dtypes
+print df.head(5)
 #
 # TODO: Get a distinct list of "In" phone numbers (users) and store the values in a
 # regular python list.
 # Hint: https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.tolist.html
 #
 # .. your code here ..
-
-
+inlist = df['In'].unique().tolist()
 # 
 # TODO: Create a slice called user1 that filters to only include dataset records where the
 # "In" feature (user phone number) is equal to the first number on your unique list above;
 # that is, the very first number in the dataset
 #
 # .. your code here ..
-
+user1 = df[df.In==inlist[0]]
 
 # INFO: Plot all the call locations
 user1.plot.scatter(x='TowerLon', y='TowerLat', c='gray', alpha=0.1, title='Call Locations')
