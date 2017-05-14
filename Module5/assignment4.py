@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
+from sklearn.cluster import KMeans
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -64,6 +65,8 @@ def doKMeans(data, clusters=0):
   # `model`, which is a SKLearn K-Means model for this to work.
   #
   # .. your code here ..
+  model = KMeans(clusters)
+  model.fit(data)
   return model.cluster_centers_, model.labels_
 
 
@@ -74,7 +77,8 @@ def doKMeans(data, clusters=0):
 # on it.
 #
 # .. your code here ..
-
+df = pd.read_csv('Datasets/Wholesale customers data.csv')
+df = df.fillna(0)
 #
 # TODO: As instructed, get rid of the 'Channel' and 'Region' columns, since
 # you'll be investigating as if this were a single location wholesaler, rather
@@ -82,16 +86,14 @@ def doKMeans(data, clusters=0):
 # KMeans to examine and give weight to them.
 #
 # .. your code here ..
-
-
+df = df.drop(['Channel','Region'],axis=1)
 #
 # TODO: Before unitizing / standardizing / normalizing your data in preparation for
 # K-Means, it's a good idea to get a quick peek at it. You can do this using the
 # .describe() method, or even by using the built-in pandas df.plot.hist()
 #
 # .. your code here ..
-
-
+df.describe()
 #
 # INFO: Having checked out your data, you may have noticed there's a pretty big gap
 # between the top customers in each feature category and the rest. Some feature
@@ -124,8 +126,6 @@ for col in df.columns:
 print "Dropping {0} Outliers...".format(len(drop))
 df.drop(inplace=True, labels=drop.keys(), axis=0)
 print df.describe()
-
-
 #
 # INFO: What are you interested in?
 #
@@ -178,8 +178,8 @@ print df.describe()
 #T = preprocessing.StandardScaler().fit_transform(df)
 #T = preprocessing.MinMaxScaler().fit_transform(df)
 #T = preprocessing.MaxAbsScaler().fit_transform(df)
-#T = preprocessing.Normalizer().fit_transform(df)
-T = df # No Change
+T = preprocessing.Normalizer().fit_transform(df)
+#T = df # No Change
 
 
 #
@@ -202,7 +202,7 @@ centroids, labels = doKMeans(T, n_clusters)
 # is good. Print them out before you transform them into PCA space for viewing
 #
 # .. your code here ..
-
+print centroids
 
 # Do PCA *after* to visualize the results. Project the centroids as well as 
 # the samples into the new 2D feature space for visualization purposes.
