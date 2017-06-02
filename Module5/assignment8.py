@@ -34,7 +34,9 @@ def drawLine(model, X_test, y_test, title):
 # spread sheet application
 #
 # .. your code here ..
-
+X = pd.read_csv('Datasets/life_expectancy.csv', sep='\t')
+print X.describe()
+print X.dtypes
 
 #
 # TODO: Create your linear regression model here and store it in a
@@ -42,7 +44,8 @@ def drawLine(model, X_test, y_test, title):
 # with it yet:
 #
 # .. your code here ..
-
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
 
 
 #
@@ -54,7 +57,10 @@ def drawLine(model, X_test, y_test, title):
 # of this document before proceeding.
 #
 # .. your code here ..
-
+X_train = X[X.Year<1986]
+y_train = X_train
+X_train = X_train[['Year']]
+y_train = y_train[['WhiteMale']]
 
 
 #

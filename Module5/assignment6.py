@@ -2,6 +2,7 @@ import random, math
 import pandas as pd
 import numpy as np
 import scipy.io
+import matplotlib
 
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
@@ -98,7 +99,13 @@ def Plot2DBoundary(DTrain, LTrain, DTest, LTest):
 # instead of sideways. This was demonstrated in the M4/A4 code:
 #
 # .. your code here ..
-
+mat = scipy.io.loadmat('../Module4/Datasets/face_data.mat')
+df = pd.DataFrame(mat['images']).T
+num_images, num_pixels = df.shape
+num_pixels = int(math.sqrt(num_pixels))
+# Rotate the pictures, so we don't have to crane our necks:
+for i in range(num_images):
+  df.loc[i,:] = df.loc[i,:].reshape(num_pixels, num_pixels).T.reshape(-1)
 
 #
 # TODO: Load up your face_labels dataset. It only has a single column, and
@@ -109,7 +116,8 @@ def Plot2DBoundary(DTrain, LTrain, DTest, LTest):
 # loaded it correctly.
 #
 # .. your code here ..
-
+df2 = pd.read_csv('Datasets/face_labels.csv',names=['labels'])
+labels = df2['labels']
 
 #
 # TODO: Do train_test_split. Use the same code as on the EdX platform in the
@@ -121,7 +129,8 @@ def Plot2DBoundary(DTrain, LTrain, DTest, LTest):
 # than as points:
 #
 # .. your code here ..
-
+from sklearn.model_selection import train_test_split
+data_train, data_test, label_train, label_test = train_test_split(df,labels,random_state=7,test_size=0.15)
 
 
 if Test_PCA:
@@ -144,6 +153,11 @@ if Test_PCA:
   # data_train, and data_test.
   #
   # .. your code here ..
+  from sklearn.decomposition import PCA
+  pca = PCA(n_components=2)
+  pca.fit(data_train)
+  data_train = pca.transform(data_train)
+  data_test = pca.transform(data_test)
 
 else:
   # INFO: Isomap is used *before* KNeighbors to simplify your high dimensionality
@@ -166,8 +180,11 @@ else:
   # data_train, and data_test.
   #
   # .. your code here ..
-
-
+  from sklearn.manifold import Isomap
+  isomap  = Isomap(n_components=2,n_neighbors=5)
+  isomap.fit(data_train)
+  data_train = isomap.transform(data_train)
+  data_test = isomap.transform(data_test)
 
 
 #
@@ -178,7 +195,9 @@ else:
 # labels that those 2d representations should be.
 #
 # .. your code here ..
-
+from sklearn import neighbors
+model = neighbors.KNeighborsClassifier(n_neighbors=5)
+model.fit(data_train,label_train)
 
 
 #
@@ -186,8 +205,7 @@ else:
 # label_test).
 #
 # .. your code here ..
-
-
+print model.score(data_test,label_test)
 
 # Chart the combined decision boundary, the training data as 2D plots, and
 # the testing data as small images so we can visually validate performance.

@@ -9,7 +9,6 @@ matplotlib.style.use('ggplot') # Look Pretty
 def plotDecisionBoundary(model, X, y):
   fig = plt.figure()
   ax = fig.add_subplot(111)
-
   padding = 0.6
   resolution = 0.0025
   colors = ['royalblue','forestgreen','ghostwhite']
@@ -52,31 +51,34 @@ def plotDecisionBoundary(model, X, y):
 # loading your data properly--don't fail on the 1st step!
 #
 # .. your code here ..
-
-
+df = pd.read_csv('Datasets/wheat.data',index_col=0)
+#print df.head(5) 
+#df = df.dropna(axis=0).reset_index(drop=True)
+#print df.describe()
+#print df.dtypes
 
 #
 # TODO: Copy the 'wheat_type' series slice out of X, and into a series
 # called 'y'. Then drop the original 'wheat_type' column from the X
 #
 # .. your code here ..
-
+y = df['wheat_type']
+df = df.drop(['wheat_type'],axis=1)
 
 
 # TODO: Do a quick, "ordinal" conversion of 'y'. In actuality our
 # classification isn't ordinal, but just as an experiment...
 #
 # .. your code here ..
-
-
+cats = y.unique()
+y = y.astype("category",ordered=True,categories=cats).cat.codes
 
 #
 # TODO: Basic nan munging. Fill each row's nans with the mean of the feature
 #
 # .. your code here ..
-
-
-
+df = df.fillna(df.mean())
+y = y.fillna(y.mean())
 #
 # TODO: Split X into training and testing data sets using train_test_split().
 # INFO: Use 0.33 test size, and use random_state=1. This is important
@@ -84,23 +86,21 @@ def plotDecisionBoundary(model, X, y):
 # specify a random_state.
 #
 # .. your code here ..
-
-
-
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(df,y,random_state=1,test_size=0.33)
 # 
 # TODO: Create an instance of SKLearn's Normalizer class and then train it
 # using its .fit() method against your *training* data.
 #
 # NOTE: The reason you only fit against your training data is because in a
-# real-world situation, you'll only have your training data to train with!
+# real-world situation, you'll only have your training data to train with!5
 # In this lab setting, you have both train+test data; but in the wild,
 # you'll only have your training data, and then unlabeled data you want to
 # apply your models to.
 #
 # .. your code here ..
-
-
-
+from sklearn.preprocessing import Normalizer
+scaler = Normalizer().fit(X_train)
 #
 # TODO: With your trained pre-processor, transform both your training AND
 # testing data.
@@ -110,10 +110,10 @@ def plotDecisionBoundary(model, X, y):
 # feature-space as the original data used to train your models.
 #
 # .. your code here ..
-
-
-
-
+prep_X_train = scaler.transform(X_train)
+prep_X_test = scaler.transform(X_test)
+#prep_X_train = X_train
+#prep_X_test = X_test
 #
 # TODO: Just like your preprocessing transformation, create a PCA
 # transformation as well. Fit it against your training data, and then
@@ -124,10 +124,11 @@ def plotDecisionBoundary(model, X, y):
 # boundary in 2D would be if your KNN algo ran in 2D as well:
 #
 # .. your code here ..
-
-
-
-
+from sklearn.decomposition import PCA
+pca = PCA(n_components = 2)
+pca.fit(prep_X_train)
+pca_X_train = pca.transform(prep_X_train)
+pca_X_test = pca.transform(prep_X_test)
 #
 # TODO: Create and train a KNeighborsClassifier. Start with K=9 neighbors.
 # NOTE: Be sure train your classifier against the pre-processed, PCA-
@@ -135,12 +136,12 @@ def plotDecisionBoundary(model, X, y):
 # your labels.
 #
 # .. your code here ..
-
-
-
+from sklearn import neighbors
+knn = neighbors.KNeighborsClassifier(n_neighbors=1)
+knn.fit(pca_X_train,y_train)
 
 # HINT: Ensure your KNeighbors classifier object from earlier is called 'knn'
-plotDecisionBoundary(knn, X_train, y_train)
+plotDecisionBoundary(knn, pca_X_train, y_train)
 
 
 #------------------------------------
@@ -152,9 +153,10 @@ plotDecisionBoundary(knn, X_train, y_train)
 # .score will take care of running your predictions for you automatically.
 #
 # .. your code here ..
-
-
-
+score = knn.score(pca_X_test,y_test)
+from sklearn.metrics import accuracy_score
+#print accuracy_score(y_test,y_pred)
+print 'overal score =',score
 #
 # BONUS: Instead of the ordinal conversion, try and get this assignment
 # working with a proper Pandas get_dummies for feature encoding. HINT:
