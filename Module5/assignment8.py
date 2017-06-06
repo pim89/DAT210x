@@ -72,14 +72,14 @@ y_train = y_train[['WhiteMale']]
 # 2030 and 2045 extrapolation.
 #
 # .. your code here ..
-
-
+model.fit(X_train,y_train)
+drawLine(model,X_train,y_train,'WhiteMale')
 #
 # TODO: Print the actual 2014 WhiteMale life expectancy from your
 # loaded dataset
 #
 # .. your code here ..
-
+print X.WhiteMale[X.Year==2014]
 
 
 # 
@@ -89,8 +89,13 @@ y_train = y_train[['WhiteMale']]
 # BlackFemale life expectancy
 #
 # .. your code here ..
-
-
+X_train = X[X.Year<1986]
+y_train = X_train
+X_train = X_train[['Year']]
+y_train = y_train[['BlackFemale']]
+model.fit(X_train,y_train)
+drawLine(model,X_train,y_train,'BlackFemale')
+print X.BlackFemale[X.Year==2014]
 
 #
 # TODO: Lastly, print out a correlation matrix for your entire
@@ -98,7 +103,10 @@ y_train = y_train[['WhiteMale']]
 # matrix, just as we described in the visualization section of
 # the course
 #
-# .. your code here ..
+# .. your code here 
+X.corr()
+
+
 
 plt.show()
 

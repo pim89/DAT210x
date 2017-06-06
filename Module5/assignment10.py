@@ -48,7 +48,7 @@ Provided_Portion = 0.25
 # TODO: Create a regular ol' Python List called `zero`
 #
 # .. your code here ..
-
+zero =[]
 
 
 #
@@ -59,8 +59,16 @@ Provided_Portion = 0.25
 # append the loaded audio data into your Python list `zero`:
 #
 # .. your code here ..
+from os import listdir
+from os.path import isfile, join
 
-
+direc = 'Datasets/recordings'
+reclist = listdir(direc)
+for name in reclist:
+    path=join(direc,name)
+    x = wavfile.read(path)
+    x = x[1]
+    zero.append(x)
 
 # 
 # TODO: Just for a second, convert zero into a DataFrame. When you do
@@ -77,7 +85,9 @@ Provided_Portion = 0.25
 # NDArray using yourarrayname.values
 #
 # .. your code here ..
-
+df = pd.DataFrame(zero, dtype=np.int16)
+df = df.dropna(axis=1)
+zero = df.values
 
 #
 # TODO: It's important to know how (many audio_samples samples) long the

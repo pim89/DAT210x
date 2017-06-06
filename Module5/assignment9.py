@@ -83,7 +83,9 @@ def drawPlane(model, X_test, y_test, title, R2):
 # called X:
 #
 # .. your code here ..
-
+X = pd.read_csv('Datasets/College.csv',index_col=0)
+print X.dtypes
+print X.describe()
 
 #
 # INFO: This line isn't necessary for your purposes; but we'd just
@@ -102,9 +104,8 @@ X.Private = X.Private.map({'Yes':1, 'No':0})
 # with it yet:
 #
 # .. your code here ..
-
-
-
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
 
 #
 # INFO: The first relationship we're interested in is the 
@@ -119,18 +120,24 @@ X.Private = X.Private.map({'Yes':1, 'No':0})
 # a random_state of 7.
 #
 # .. your code here ..
-
+Xrb = X['Room.Board']
+Xac = X['Accept']
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(Xrb,Xac,random_state=7,test_size=0.3)
+X_train = X_train.reshape(-1,1)
+y_train = y_train.reshape(-1,1)
+X_test = X_test.reshape(-1,1)
+y_test = y_test.reshape(-1,1)
 #
 # TODO: Fit and score your model appropriately. Store the score in the
 # score variable.
 #
 # .. your code here ..
+model.fit(X_train,y_train)
+score = model.score(X_test,y_test)
 
 # INFO: We'll take it from here, buddy:
 drawLine(model, X_test, y_test, "Accept(Room&Board)", score)
-
-
-
 
 # 
 # TODO: Duplicate the process above; this time, model the number of
@@ -138,19 +145,34 @@ drawLine(model, X_test, y_test, "Accept(Room&Board)", score)
 # per college.
 #
 # .. your code here ..
+Xrb = X['Enroll']
+Xac = X['Accept']
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(Xrb,Xac,random_state=7,test_size=0.3)
+X_train = X_train.reshape(-1,1)
+y_train = y_train.reshape(-1,1)
+X_test = X_test.reshape(-1,1)
+y_test = y_test.reshape(-1,1)
+model.fit(X_train,y_train)
+score = model.score(X_test,y_test)
 drawLine(model, X_test, y_test, "Accept(Enroll)", score)
-
-
-
 # 
 # TODO: Duplicate the process above; this time, model the number of
 # accepted students, as as function of the numbr of failed undergraduate
 # students per college.
 #
 # .. your code here ..
+Xrb = X['F.Undergrad']
+Xac = X['Accept']
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(Xrb,Xac,random_state=7,test_size=0.3)
+X_train = X_train.reshape(-1,1)
+y_train = y_train.reshape(-1,1)
+X_test = X_test.reshape(-1,1)
+y_test = y_test.reshape(-1,1)
+model.fit(X_train,y_train)
+score = model.score(X_test,y_test)
 drawLine(model, X_test, y_test, "Accept(F.Undergrad)", score)
-
-
 #
 # TODO: Duplicate the process above (almost). This time is going to be
 # a bit more complicated. Instead of modeling one feature as a function
@@ -164,6 +186,17 @@ drawLine(model, X_test, y_test, "Accept(F.Undergrad)", score)
 # inputs. Your training labels will remain a single slice.
 #
 # .. your code here ..
+Xrb = X[['F.Undergrad','Enroll']]
+Xac = X['Accept']
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(Xrb,Xac,random_state=7,test_size=0.3)
+#X_train = X_train.reshape(-1,1)
+y_train = y_train.reshape(-1,1)
+#X_test = X_test.reshape(-1,1)
+y_test = y_test.reshape(-1,1)
+model.fit(X_train,y_train)
+score = model.score(X_test,y_test)
+
 drawPlane(model, X_test, y_test, "Accept(Room&Board,Enroll)", score)
 
 
